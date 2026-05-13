@@ -1,5 +1,5 @@
 # Servidor de Chat
-Implementação de um servidor de chat, onde clientes podem se conectar e trocar mensagens com o servidor e com outros clientes simultaneamente.
+Implementação de um servidor de chat, onde um cliente pode se conectar e trocar mensagens com o servidor.
 
 # Modo de uso:
 1. Compilar e rodar o código do servidor;
