@@ -32,7 +32,7 @@ void *listening(void *arg) {
     exit(0);
 }
 
-int main(int argc, char **argv) {
+int main() {
     int listenfd, connfd;
     struct sockaddr_in servaddr;
     pthread_t thread_id;
