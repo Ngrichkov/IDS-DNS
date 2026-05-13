@@ -30,7 +30,7 @@ void *listening(void *arg) {
   exit(0);
 }
 
-int main(int argc, char **argv) {
+int main(int argc) {
   int sockfd;
   ssize_t n;
   pthread_t thread_id;
