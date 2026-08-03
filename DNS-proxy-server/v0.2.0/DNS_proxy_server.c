@@ -89,7 +89,6 @@ int main(){
 
         switch((unsigned char)buffer[2]>>7){
             case 0:{
-                printf("Query recebida;\n");
                 int cli_id = ((unsigned char)buffer[0] << 8) | (unsigned char)buffer[1];
                 char* hostname=dns_parser(buffer);
                 char hash_key[MAXLINE];
@@ -105,14 +104,12 @@ int main(){
                 permission[1]=0;
                 if(permission[0]==1){
                     sendto(listen_fd, buffer, n, 0, (struct sockaddr*) &name_server_addr, sizeof(name_server_addr));
-                    printf("\tQuery premitida;\n");
                 }
                 free(hostname);
                 break;
             }
 
             case 1:{
-                printf("Resposta recebida;\n");
                 int cli_id = ((unsigned char)buffer[0] << 8) | (unsigned char)buffer[1];
                 char* hostname = dns_parser(buffer);
                 char hash_key[MAXLINE];
