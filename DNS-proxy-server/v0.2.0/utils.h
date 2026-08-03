@@ -4,6 +4,7 @@
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
 #define TABLE_SIZE 1024
 
@@ -12,14 +13,14 @@
 /*Linked List */
 struct Cel{
     struct sockaddr_in client;
-    int id;
+    char* id;
     struct Cel* next;
 };
 typedef struct Cel cel;
 
-cel* add_cel(cel *head,struct sockaddr_in client, int id);
+cel* add_cel(cel *head,struct sockaddr_in client, char* id);
 
-cel* rem_cel(cel *head, int id);
+cel* rem_cel(cel *head, char* id);
 
 /*----------------------------------------------------------------*/
 
@@ -38,11 +39,13 @@ struct Hashhead{
 };
 typedef struct Hashhead hashhead;
 
-uint32_t hash(uint32_t x);
+uint32_t hash(char *str);
 
 void initHash();
 
-void putClient(int id, struct sockaddr_in client);
+void putClient(char* id, struct sockaddr_in client);
+
+int getClient(char* id, struct sockaddr_in *client);
 
 void freeHash();
 

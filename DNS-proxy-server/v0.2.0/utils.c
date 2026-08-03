@@ -6,22 +6,22 @@
 
 /*Linked List*/
 
-cel* add_cel(cel *head,struct sockaddr_in client, int id){
+cel* add_cel(cel *head,struct sockaddr_in client, char* id){
     cel *new=malloc(sizeof(cel));
     new->next=head;
     new->client=client;
-    new->id=id;
+    new->id=strdup(id);
     
     return new;
 }
 
-cel* rem_cel(cel *head, int id){
+cel* rem_cel(cel *head, char* id){
     if (!head) return NULL;
 
     cel *aux=head;
     cel *save=NULL;
 
-    while(aux && aux->id!=id){
+    while(aux && strcmp(aux->id, id)!=0){
         save=aux;
         aux=aux->next;
     }
@@ -32,6 +32,7 @@ cel* rem_cel(cel *head, int id){
         }else{
             head=aux->next;
         }
+        free(aux->id);
         free(aux);
     }
 
@@ -96,56 +97,78 @@ char* dns_parser(char* buffer){
 
 hashhead* Hash_table[TABLE_SIZE];
 
-uint32_t hash(uint32_t x) {
-    x = ((x >> 16) ^ x) * 0x45d9f3bu;
-    x = ((x >> 16) ^ x) * 0x45d9f3bu;
-    x = (x >> 16) ^ x;
-    return x;
+uint32_t hash(char *str) {
+    uint32_t hash=5381;
+    int c;
+    while((c=*str++)){
+        hash=((hash<<5)+hash)+c;
+    }
+    return hash % TABLE_SIZE;
 }
 
 void initHash(){
-    for(int i=0; i<TABLE_SIZE; i++){
+    for(int i=0; i<TABLE_SIZE; i++)
         Hash_table[i]=NULL;
-    }
 }
 
-void putClient(int id, struct sockaddr_in client){
-    int h=hash((uint32_t) id);
+void putClient(char* id, struct sockaddr_in client){
+    int h=hash(id);
     hashhead *step=Hash_table[h];
-    hashhead *save=NULL;
 
     while(step!=NULL){
-        if(id==step->id){
+        if(strcmp(id, step->id)==0){
             cel *new=malloc(sizeof(cel));
-
-            new->next=step->next;
-            new->id=id;
-
+            new->client=client;
+            new->id=strdup(id);
+            new->next=step->clients;
             step->clients=new;
-    
             return;
         }
-
-        save=step;
         step=step->next;
     }
 
     hashhead *new=malloc(sizeof(hashhead));
-
     new->clients=malloc(sizeof(cel));
-    new->clients->id=id;
+    new->id=strdup(id);
     new->clients->next=NULL;
+    new->clients->id=strdup(id);
+    new->clients->client=client;
     
-    new->next=NULL;
-
-    if (save==NULL){
-        Hash_table[h]=new;
-    } else {
-        save->next = new;
-    }
+    new->next=Hash_table[h];
+    Hash_table[h]=new;
 }
 
+int getClient(char* id, struct sockaddr_in *client){
+    int h=hash(id);
+    hashhead *step=Hash_table[h];
+    hashhead *save=NULL;
 
+    while(step!=NULL){
+        if(strcmp(id, step->id)==0){
+            if(step->clients!=NULL){
+                *client=step->clients->client;
+                
+                cel *temp=step->clients;
+                step->clients=step->clients->next;
+                
+                free(temp->id);
+                free(temp);
+                
+                if (step->clients==NULL) {
+                    if (save==NULL) Hash_table[h]=step->next;
+                    else save->next=step->next;
+                    free(step->id); 
+                    free(step);
+                }
+                return 1;
+            }
+            return 0; 
+        }
+        save=step;
+        step=step->next;
+    }
+    return 0;
+}
 
 void freeHash() {
     for (int i = 0; i < TABLE_SIZE; i++) {
