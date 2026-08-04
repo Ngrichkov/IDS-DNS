@@ -1,0 +1,2 @@
+Added two threads to the program: a sampling thread and a supervisor thread. The sampling thread periodically sends 100 DNS queries for "google.com" to the name server and times the responses in order to obtain an estimate for a reasonable time to live for the stored queries. The supervisor thread uses that estimate to verify that every stored client has not surpassed that time to live, and if so, removes the client.
+In additions, some modifications to the linked list, hashtable and main server were made in order to the implementation of the threads.
