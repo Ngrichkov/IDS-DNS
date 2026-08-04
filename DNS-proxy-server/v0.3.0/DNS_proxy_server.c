@@ -24,7 +24,6 @@ void* sampling(void* arg){
     char buffer[MAXLINE];
 
     while(1){
-        printf("\n\tObtendo ttl...\n");
         double times[100];
         double sum=0.0;
 
@@ -52,8 +51,6 @@ void* sampling(void* arg){
         pthread_mutex_lock(&ttl_mutex);
         ttl=1.65*std_dev+mean;
         pthread_mutex_unlock(&ttl_mutex);
-        
-        printf("\tttl%lf\n", ttl);
 
         sleep(300);
     }
@@ -62,7 +59,6 @@ void* sampling(void* arg){
 void* supervisor(void* arg) {
     while(1) {
         sleep(10);
-        printf("\n\t\tsupervisorando...\n\n");
 
         pthread_mutex_lock(&ttl_mutex);
         double current_ttl = ttl;
@@ -188,7 +184,6 @@ int main(int argc, char** argv){
 
         switch((unsigned char)buffer[2]>>7){
             case 0:{
-                printf("Query recebida...\n");
                 int cli_id = ((unsigned char)buffer[0] << 8) | (unsigned char)buffer[1];
                 char* hostname=dns_parser(buffer);
                 char hash_key[MAXLINE];
@@ -212,7 +207,6 @@ int main(int argc, char** argv){
             }
 
             case 1:{
-                printf("Resposta obtida...\n");
                 int cli_id = ((unsigned char)buffer[0] << 8) | (unsigned char)buffer[1];
                 char* hostname = dns_parser(buffer);
                 char hash_key[MAXLINE];
