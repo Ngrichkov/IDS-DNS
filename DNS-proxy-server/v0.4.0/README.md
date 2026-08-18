@@ -1,1 +1,1 @@
-
+Added a thread so the proxy server can establish a persistent TCP connection with the Oracle and exchange messages only through this connection. In order to do this, a queue data structure was added and some changes to other structures (ex: hash cells) and code (ex: changed to the main so instead of it sending the messages to the oracle directly, it adds the query to the queue so the oracle thread can deal with it).
