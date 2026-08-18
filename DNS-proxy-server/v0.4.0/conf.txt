@@ -1,0 +1,5 @@
+DNS_server_address=8.8.8.8
+proxy_server_port=8082
+oracle_server_port=8081
+oracle_server_address=127.0.0.1
+redirection_page_server=
